@@ -12,13 +12,35 @@ public class player : MonoBehaviour
 
     private RaycastHit2D hit;
 
+    public float moveX = 1;
+    public float moveY = 1;
+
+    private bool isWalkFirst = true;
+    private bool isIdleNow = false;
+    private Animator animator;
+
     private void Start() {
         boxCollider = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void FixedUpdate() {
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
+        float x = Input.GetAxisRaw("Horizontal")*moveX;
+        float y = Input.GetAxisRaw("Vertical")*moveY;
+
+        if(isWalkFirst && (x != 0 || y != 0))
+        {
+            isWalkFirst = false;
+            isIdleNow = false;
+            animator.Play("walk");
+        }
+
+        if(x == 0 && y == 0 && !isIdleNow)
+        {
+            isWalkFirst = true;
+            isIdleNow = true;
+            animator.Play("idle");
+        }
 
         moveDelta = new Vector3(x, y, 0);
 
