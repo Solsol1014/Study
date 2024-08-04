@@ -1,55 +1,23 @@
-#실패 - 정답 봤음 2407130522
+#답보고 - 2407142241
+import sys
 
-import copy
-
-count = int(input())
+count = int(sys.stdin.readline().strip())
 
 times = []
 for i in range(0, count):
-    temp = input()
+    temp = sys.stdin.readline().strip()
     temp1, temp2 = temp.split()
     times.append((int(temp1), int(temp2)))
 
-schedules = []
-sametime = 0
-max = 0
-i = 1
-for time in times:
-    if time[0]!=time[1]:
-        if len(schedules)>0:
-            appendSchedule = []
-            for schedule in schedules:
-                if len(schedule) + count - i + 1 > max:
-                    canAppend = True
-                    for confirmed in schedule:
-                        if time[1] <= confirmed[0] or time[0] >= confirmed[1]:
-                            canAppend = True
-                        else:
-                            canAppend = False
-                            break
-                    
-                    if canAppend:
-                        temp = copy.deepcopy(schedule)
-                        appendSchedule.append(temp)
-                        schedule.append(time)
-                        if len(schedule) > max:
-                            max = len(schedule)
-                else:
-                    schedules.pop(i-1)
-            
-            schedules.extend(appendSchedule)
-            if max < count - i + 1:
-                schedules.append([time])
-        else:
-            schedules.append([time])
-            max = 1
-    else:
-        sametime += 1
-    
-    # for schedule in schedules:
-    #     print(schedule)
-    # print('---------------')
-    
-    i += 1
+times.sort(key=lambda x : (x[1], x[0]))
 
-print(max+sametime)
+max = 1
+end = times[0][1]
+times.pop(0)
+
+for time in times:
+    if time[0]>=end:
+        end = time[1]
+        max += 1
+
+print(max)
