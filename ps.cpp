@@ -3,6 +3,9 @@
 //#include <cstdio>
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    
     int n;
     std::cin >> n;
 
@@ -36,11 +39,15 @@ int main() {
         }
 
         if (iter == price.end()) {
-            for (int i = std::distance(price.begin(), begin);i<price.size();i++) {
-                sum += *begin * citylen[i];
+            if(begin == iter-1) {
+                break;
             }
-
-            break;
+            else {
+                for (int i = std::distance(price.begin(), begin);i<price.size();i++) {
+                    sum += *begin * citylen[i];
+                }
+                break;
+            }
         }
     }
 
