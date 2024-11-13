@@ -22,33 +22,15 @@ int main() {
         price.push_back(tmp);
     }
 
-    std::vector<int>::iterator begin = price.begin();
-    int sum = 0;
-    std::vector<int>::iterator iter;
+    long long sum = 0;
+    int current_price = price[0];
 
-    while (true) {
-        for (iter = begin;iter!=price.end();iter++) {
-            if (*begin > *iter) {
-                for (int i = std::distance(price.begin(), begin);i<std::distance(price.begin(), iter);i++) {
-                    sum += *begin * citylen[i];
-                }
-
-                begin = iter;
-                break;
-            }
+    for(int i = 0;i<n-1;i++) {
+        if(price[i]<current_price) {
+            current_price = price[i];
         }
 
-        if (iter == price.end()) {
-            if(begin == iter-1) {
-                break;
-            }
-            else {
-                for (int i = std::distance(price.begin(), begin);i<price.size();i++) {
-                    sum += *begin * citylen[i];
-                }
-                break;
-            }
-        }
+        sum += static_cast<long long>(current_price)*citylen[i];
     }
 
     std::cout << sum;
