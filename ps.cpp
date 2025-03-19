@@ -6,33 +6,30 @@ int main() {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
     
-    int n;
+    int n, m;
     std::cin >> n;
+    std::cin >> m;
 
-    std::vector<int> citylen;
-    for (int i = 0;i<n-1;i++) {
-        int tmp;
-        std::cin >> tmp;
-        citylen.push_back(tmp); 
-    }
-    std::vector<int> price;
+    std::vector<int> numbers;
     for (int i = 0;i<n;i++) {
         int tmp;
         std::cin >> tmp;
-        price.push_back(tmp);
+        numbers.push_back(tmp); 
     }
+    
+    int max = 0;
 
-    long long sum = 0;
-    int current_price = price[0];
-
-    for(int i = 0;i<n-1;i++) {
-        if(price[i]<current_price) {
-            current_price = price[i];
+    for (std::vector<int>::iterator itr = numbers.begin() ; itr != numbers.end()-2 ; itr++) {
+        for (std::vector<int>::iterator itr2 = itr+1 ; itr2 != numbers.end()-1 ; itr2++) {
+            for (std::vector<int>::iterator itr3 = itr2+1 ; itr3 != numbers.end() ; itr3++) {
+                int tmp = *itr + *itr2 + *itr3;
+                if(tmp <= m && tmp > max) {
+                    max = tmp;
+                }
+            }
         }
-
-        sum += static_cast<long long>(current_price)*citylen[i];
     }
 
-    std::cout << sum;
+    std::cout << max;
     return 0;
 }
