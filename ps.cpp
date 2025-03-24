@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+#include <set>
+#include <deque>
+// #include <algorithm>
 //#include <cstdio>
 
 int main() {
@@ -14,41 +16,58 @@ int main() {
         return 0;
     }
 
-    std::vector<int> fruits1, fruits2;
-    for (int i=0 ; i<n/2 ; i++) {
+    std::vector<int> fruits;
+    for (int i = 0 ; i < n ; i++) {
         int tmp;
         std::cin >> tmp;
-        fruits1.push_back(tmp);
-    }
-    for (int i=n/2 ; i<n ; i++) {
-        int tmp;
-        std::cin >> tmp;
-        fruits2.push_back(tmp);
+        fruits.push_back(tmp);
     }
 
-    // for(std::vector<int>::iterator itr = fruits1.begin() ; itr != fruits1.end() ; itr++) {
-    //     std::cout << *itr << "\n";
-    // }
+    std::set<int> types;
+    std::deque<int> realfruit;
+    int max = 0;
+    int lasttype = 0;
+    int count = 0;
 
-    // std::cout << "\n";
+    for (auto itr = fruits.begin() ; itr != fruits.end() ; itr++) {
+        if(types.find(*itr)==types.end()) {
+            if(types.size()<2) {
+                types.insert(*itr);
+                realfruit.push_back(*itr);
+                count = 1;
+            }
+            else {
+                if(max < realfruit.size())
+                    max = realfruit.size();
+                
+                types.clear();
+                types.insert(lasttype);
+                types.insert(*itr);
 
-    // for(std::vector<int>::iterator itr = fruits2.begin() ; itr != fruits2.end() ; itr++) {
-    //     std::cout << *itr << "\n";
-    // }
+                while(realfruit.size()!=count)
+                    realfruit.pop_front();
+                
+                realfruit.push_back(*itr);
+                count = 1;
+            }
+        }
+        else {
+            realfruit.push_back(*itr);
+            if (lasttype==*itr)
+                count++;
+            else
+                count = 1;
+        }
 
-    int type2[2];
-    
-    if(n%2==1) {
-        type2[0] = fruits2[0];
-        fruits2.erase(fruits2.begin());
+        lasttype = *itr;
+        if(realfruit.size() > max)
+            max = realfruit.size();
     }
 
-    std::vector<int>::reverse_iterator itr1 = fruits1.rbegin();
-    std::vector<int>::iterator itr2 = fruits2.begin();
-
-    for (int i = 0; i<n/2 ; i++) {
+    if(max==0)
+        max = fruits.size();
         
-    }
+    std::cout << max;
 
     return 0;
 }
