@@ -1,6 +1,6 @@
 #include <iostream>
 // #include <vector>
-#include <set>
+// #include <set>
 // #include <deque>
 // #include <algorithm>
 // #include <cstdio>
@@ -12,8 +12,9 @@ int main() {
 	std::ios_base::sync_with_stdio(false);
 	std::cin.tie(NULL);
 
-
+    int n;
+    std::cin >> n;
+    
 
     return 0;
 }
-
