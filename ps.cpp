@@ -1,6 +1,6 @@
 #include <iostream>
-// #include <vector>
-// #include <set>
+#include <vector>
+#include <set>
 // #include <deque>
 // #include <algorithm>
 // #include <cstdio>
@@ -8,97 +8,104 @@
 // #include <list>
 // #include <iterator>
 // #include <map>
+// #include <cmath>
 
-int answers[1000001] = {0, };
-
-void calculate(int n);
+int bfs(std::vector<std::vector<int>> &box, int &noIc, std::set<std::pair<int, int>> &haveTo, int m, int n);
 
 int main() {
 	std::ios_base::sync_with_stdio(false);
 	std::cin.tie(NULL);
 
-    answers[2] = 1;
-    answers[3] = 1;
+    int m, n;
+    std::cin >> n >> m;
 
-    int n;
-    std::cin >> n;
+    std::vector<std::vector<int>> box;
+    int noIc = 0;
+    std::set<std::pair<int, int>> haveTo;
 
-    if(n!=1) {
-        calculate(n);
-        std::cout << answers[n];
+    for(int i = 0 ; i<m ; i++) {
+        std::vector<int> tmpvec;
+        for(int j = 0 ; j<n ; j++) {
+            int tmp;
+            std::cin >> tmp;
+            tmpvec.push_back(tmp);
+            if(tmp==0)
+                noIc++;
+            else if (tmp==1)
+                haveTo.insert(std::make_pair(i, j));
+        }
+
+        box.push_back(tmpvec);
     }
-    if(n==1) {
+
+    if(noIc==0)
         std::cout << 0;
+    else {
+        int day = bfs(box, noIc, haveTo, m, n);
+        if(noIc==0)
+            std::cout << day;
+        else
+            std::cout << -1;
     }
 
     return 0;
 }
 
-void calculate(int n) {
-    if(answers[n]!=0) {
-        return;
+int bfs(std::vector<std::vector<int>> &box, int &noIc, std::set<std::pair<int, int>> &haveTo, int m, int n) {
+    std::set<std::pair<int, int>> newhaveTo;
+
+    for(auto itr = haveTo.begin() ; itr!=haveTo.end() ; itr++) {
+        std::pair<int, int> search = *itr;
+        int x = search.first;
+        int y = search.second;
+
+        for(int i = 0 ; i<4 ; i++) {
+            int tmpx, tmpy;
+            if(i==0) {
+                if(x==0)
+                    continue;
+                else {
+                    tmpx = x-1;
+                    tmpy = y;
+                }
+            }
+            else if(i==1) {
+                if(y==0)
+                    continue;
+                else {
+                    tmpx = x;
+                    tmpy = y-1;
+                }
+            }
+            else if(i==2) {
+                if(x==m-1)
+                    continue;
+                else {
+                    tmpx = x+1;
+                    tmpy = y;
+                }
+            }
+            else if(i==3) {
+                if(y==n-1)
+                    continue;
+                else {
+                    tmpx = x;
+                    tmpy = y+1;
+                }
+            }
+
+            if(box[tmpx][tmpy]==0) {
+                noIc--;
+                box[tmpx][tmpy] = 1;
+                newhaveTo.insert(std::make_pair(tmpx, tmpy));
+            }
+        }
     }
-    else {
-        bool onlytwo = false, onlythree = false, twothree = false;
-        if(n%2==0) {
-            if(n%3==0) {
-                twothree = true;
-            }
-            else {
-                onlytwo = true;
-            }
-        }
-        else if(n%3==0) {
-            onlythree = true;
-        }
-
-        int min = 0;
-        if(twothree) {
-            if(answers[n/3]==0 && n/3!=1)
-                calculate(n/3);
-            if(answers[n/2]==0 && n/2!=1)
-                calculate(n/2);
-            if(answers[n-1]==0)
-                calculate(n-1);
-            
-            if(answers[n/3] < answers[n/2])
-                min = answers[n/3];
-            else
-                min = answers[n/2];
-            
-            if(min > answers[n-1])
-                min = answers[n-1];
-        }
-        else if(onlythree) {
-            if(answers[n/3]==0 && n/3!=1)
-                calculate(n/3);
-            if(answers[n-1]==0)
-                calculate(n-1);
-
-            if(answers[n/3] < answers[n-1])
-                min = answers[n/3];
-            else
-                min = answers[n-1];
-        }
-        else if(onlytwo) {
-            if(answers[n/2]==0 && n/2!=1)
-                calculate(n/2);
-            if(answers[n-1]==0)
-                calculate(n-1);
-
-            if(answers[n/2] < answers[n-1])
-                min = answers[n/2];
-            else
-                min = answers[n-1];
-        }
-        else {
-            if(answers[n-1]==0)
-                calculate(n-1);
-            
-            min = answers[n-1];
-        }
     
-        answers[n] = min + 1;
-        return;
-    }
+    haveTo.clear();
+
+    if(newhaveTo.empty())
+        return 0;
+    else
+        return bfs(box, noIc, newhaveTo, m, n)+1;
 }
